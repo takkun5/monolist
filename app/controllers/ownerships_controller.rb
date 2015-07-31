@@ -21,16 +21,36 @@ class OwnershipsController < ApplicationController
       @item.raw_info        = amazon_item.get_hash
       @item.save!
     end
-
+      
+      
     # TODO ユーザにwant or haveを設定する
     # params[:type]の値ににHaveボタンが押された時にはの時は「Have」,
     # Wantボタンがされた時には「Want」が設定されています。
     
-
+    if params[:item_id]
+      @item = Item.find(params[:item_id])
+      current_user.have(@item_id)
+    end
+    
+    if  params[:item_id]
+      @item = Item.find(params[:item_id])
+      current_user.want(@item_id)
+    end
+    
   end
 
   def destroy
     @item = Item.find(params[:item_id])
+    
+   if params[:type] == "Have"
+    @item = haves.haved 
+    current_user.unhave(@item)
+   end
+   
+   if params[:type] == "Want"
+     @item = wants.wanted
+    current_user.unwant(@item)
+   end  
 
     # TODO 紐付けの解除。 
     # params[:type]の値ににHavedボタンが押された時にはの時は「Have」,
